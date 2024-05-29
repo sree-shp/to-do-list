@@ -1,6 +1,5 @@
 // Import necessary components and styles
 import TaskPane from "./components/TaskPane";
-import "./App.css";
 import { TaskProvider } from "./contexts/TaskContext";
 import TaskForm from "./components/TaskForm";
 import { useState } from "react";
