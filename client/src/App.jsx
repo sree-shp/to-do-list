@@ -1,6 +1,5 @@
 import TaskPane from "./components/TaskPane";
 import "./App.css";
-
 import { TaskProvider } from "./contexts/TaskContext";
 import TaskForm from "./components/TaskForm";
 import { useState } from "react";
@@ -23,6 +22,7 @@ function App() {
             + Add Task
           </button>
         </div>
+
         {taskForm && <TaskForm handleCreateTaskForm={handleCreateTaskForm} />}
         <div className="flex justify-between gap-5 py-[2rem]">
           <TaskPane taskStatus={"Pending"} />

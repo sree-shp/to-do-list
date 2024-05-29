@@ -1,6 +1,8 @@
 import axios from "axios";
 import { useState } from "react";
 import { useTasks } from "../contexts/TaskContext";
+import Loading from "./Loading";
+import Error from "./Error";
 
 function TaskForm({ handleCreateTaskForm }) {
   const [formValues, setFormValues] = useState({
@@ -8,6 +10,8 @@ function TaskForm({ handleCreateTaskForm }) {
     description: "",
   });
   const [titleError, setTitleError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
   const { setCreateTaskToggle } = useTasks();
 
   function handleFormChange(e) {
@@ -18,24 +22,34 @@ function TaskForm({ handleCreateTaskForm }) {
   async function handleFormSubmit(e) {
     e.preventDefault();
     try {
+      setIsLoading(true);
       if (formValues.title) {
-        const res = await axios.post(`http://localhost:4000/api/v1/task`, {
-          title: formValues.title,
-          description: formValues.description,
-        });
+        await axios.post(
+          `${import.meta.env.VITE_REACT_APP_API_BASEURL}/api/v1/task`,
+          {
+            title: formValues.title,
+            description: formValues.description,
+          }
+        );
         setCreateTaskToggle((state) => !state);
         handleCreateTaskForm();
         return;
       }
       setTitleError((state) => !state);
+      setIsLoading(false);
     } catch (err) {
+      setIsLoading(false);
       console.log(err.message);
+      setError(true);
+      setTimeout(() => {
+        setError(false);
+      }, 2000);
     }
   }
 
   return (
-    <section className="fixed top-0 left-0 right-0 bottom-0 w-screen h-screen flex justify-center items-center">
-      <div className="relative z-[1000] w-full h-full bg-black/25"></div>
+    <section className="fixed top-0 left-0 right-0 bottom-0 w-screen h-screen flex justify-center items-center  z-[10000]">
+      <div className="relative z-[10000] w-full h-full bg-black/25"></div>
       <form
         className="w-[25%] absolute z-[100000] flex flex-col gap-5 bg-white p-5 rounded-lg"
         onSubmit={handleFormSubmit}
@@ -75,6 +89,8 @@ function TaskForm({ handleCreateTaskForm }) {
           Create Task
         </button>
       </form>
+      {isLoading && <Loading />}
+      {error && <Error />}
     </section>
   );
 }

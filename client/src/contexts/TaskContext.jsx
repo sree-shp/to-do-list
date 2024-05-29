@@ -10,10 +10,15 @@ function TaskProvider({ children }) {
 
   const [draggedTask, setDraggedTask] = useState({});
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
   useEffect(() => {
     async function fetchTasks() {
       try {
-        const res = await axios.get(`http://localhost:4000/api/v1/task`);
+        const res = await axios.get(
+          `${import.meta.env.VITE_REACT_APP_API_BASEURL}/api/v1/task`
+        );
         setTasks(res.data.data.tasks);
       } catch (err) {
         console.log(err.message);
@@ -30,6 +35,10 @@ function TaskProvider({ children }) {
         setCreateTaskToggle,
         draggedTask,
         setDraggedTask,
+        isLoading,
+        setIsLoading,
+        error,
+        setError,
       }}
     >
       {children}
